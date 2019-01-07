@@ -29,9 +29,11 @@
     ]
   },
   "main": "lib/index.js",
+  "types": "types/index.d.ts",
   "files": [
     "dist",
-    "lib"
+    "lib",
+    "types"
   ],
   "engineStrict": false,
   "engines": {
@@ -42,6 +44,8 @@
     "react": ">=15"
   },
   "dependencies": {
+    "@types/json-schema": "*",
+    "@types/react": "*",
     "ajv": "^5.2.3",
     "babel-runtime": "^6.26.0",
     "core-js": "^2.5.7",
