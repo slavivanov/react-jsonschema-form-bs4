@@ -44,15 +44,15 @@ function CheckboxesWidget(props) {
         );
         return inline ? (
           <div className={`form-check-inline ${disabledCls}`} key={index}>
-            {checkbox}
             <label className="form-check-label" htmlFor={index}>
+              {checkbox}
               {option.label}
             </label>
           </div>
         ) : (
           <div className={`form-check ${disabledCls}`} key={index}>
-            {checkbox}
             <label className="form-check-label" htmlFor={index}>
+              {checkbox}
               {option.label}
             </label>
           </div>
