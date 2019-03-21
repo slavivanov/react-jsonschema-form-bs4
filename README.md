@@ -11,5 +11,13 @@ This version is based on react-jsonschema-form v1.3.0
 
     npm install react-jsonschema-form-bs4
 
+## Usage with Bootstrap 4
+
+Since Bootstrap 4 no longer includes Glyphicons, you need to use [Font
+Awesome](https://origin.fontawesome.com/) instead. You can do this by adding
+the following to your index.html file:
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+
 ## License
 Apache 2
