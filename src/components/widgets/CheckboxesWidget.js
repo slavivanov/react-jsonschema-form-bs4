@@ -15,29 +15,35 @@ function deselectValue(value, selected) {
 
 function CheckboxesWidget(props) {
   const { id, disabled, options, value, autofocus, readonly, onChange } = props;
-  const { enumOptions, inline } = options;
+  const { enumOptions, enumDisabled, inline } = options;
   return (
     <div className="checkboxes" id={id}>
       {enumOptions.map((option, index) => {
         const checked = value.indexOf(option.value) !== -1;
-        const disabledCls = disabled || readonly ? "disabled" : "";
+        const itemDisabled =
+          enumDisabled && enumDisabled.indexOf(option.value) != -1;
+        const disabledCls =
+          disabled || itemDisabled || readonly ? "disabled" : "";
         const checkbox = (
-          <input
-            className="form-check-input"
-            type="checkbox"
-            id={`${id}_${index}`}
-            checked={checked}
-            disabled={disabled || readonly}
-            autoFocus={autofocus && index === 0}
-            onChange={event => {
-              const all = enumOptions.map(({ value }) => value);
-              if (event.target.checked) {
-                onChange(selectValue(option.value, value, all));
-              } else {
-                onChange(deselectValue(option.value, value));
-              }
-            }}
-          />
+          <span>
+            <input
+              className="form-check-input"
+              type="checkbox"
+              id={`${id}_${index}`}
+              checked={checked}
+              disabled={disabled || itemDisabled || readonly}
+              autoFocus={autofocus && index === 0}
+              onChange={event => {
+                const all = enumOptions.map(({ value }) => value);
+                if (event.target.checked) {
+                  onChange(selectValue(option.value, value, all));
+                } else {
+                  onChange(deselectValue(option.value, value));
+                }
+              }}
+            />
+            <span>{option.label}</span>
+          </span>
         );
         return inline ? (
           <div className={`form-check-inline ${disabledCls}`}>
