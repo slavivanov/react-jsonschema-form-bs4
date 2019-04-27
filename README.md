@@ -11,6 +11,12 @@ This version is based on react-jsonschema-form v1.5.0
 
     npm install react-jsonschema-form-bs4
 
+## Reporting bugs
+
+If you find a bug that is specific to the Bootstrap 4 port, please report [here](https://github.com/peterkelly/react-jsonschema-form-bs4/issues).
+
+If you find a bug that is present in the main version (maintained by mozilla-services), please report [here](https://github.com/mozilla-services/react-jsonschema-form/issues)
+
 ## Usage with Bootstrap 4
 
 Since Bootstrap 4 no longer includes Glyphicons, you need to use [Font
