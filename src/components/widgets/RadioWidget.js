@@ -28,22 +28,19 @@ function RadioWidget(props) {
         const disabledCls =
           disabled || itemDisabled || readonly ? "disabled" : "";
         const radio = (
-          <span>
-            <input
-              className="form-check-input"
-              type="radio"
-              checked={checked}
-              name={name}
-              required={required}
-              value={option.value}
-              disabled={disabled || itemDisabled || readonly}
-              autoFocus={autofocus && i === 0}
-              onChange={_ => onChange(option.value)}
-              onBlur={onBlur && (event => onBlur(id, event.target.value))}
-              onFocus={onFocus && (event => onFocus(id, event.target.value))}
-            />
-            <span>{option.label}</span>
-          </span>
+          <input
+            className="form-check-input"
+            type="radio"
+            checked={checked}
+            name={name}
+            required={required}
+            value={option.value}
+            disabled={disabled || itemDisabled || readonly}
+            autoFocus={autofocus && i === 0}
+            onChange={_ => onChange(option.value)}
+            onBlur={onBlur && (event => onBlur(id, event.target.value))}
+            onFocus={onFocus && (event => onFocus(id, event.target.value))}
+          />
         );
 
         return inline ? (
