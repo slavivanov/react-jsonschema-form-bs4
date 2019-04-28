@@ -500,7 +500,7 @@ describe("uiSchema", () => {
 
       const { node } = createFormComponent({ schema, uiSchema });
 
-      expect(node.querySelector("label.control-label").textContent).eql("plop");
+      expect(node.querySelector("label").textContent).eql("plop");
     });
   });
 

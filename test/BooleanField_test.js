@@ -48,7 +48,7 @@ describe("BooleanField", () => {
       },
     });
 
-    expect(node.querySelector(".field label span").textContent).eql("foo");
+    expect(node.querySelector(".field div label").textContent).eql("foo");
   });
 
   describe("HTML5 required attribute", () => {
@@ -352,7 +352,7 @@ describe("BooleanField", () => {
       },
     });
 
-    expect(node.querySelectorAll(".radio-inline")).to.have.length.of(2);
+    expect(node.querySelectorAll(".form-check-inline")).to.have.length.of(2);
   });
 
   it("should handle a focus event for radio widgets", () => {

@@ -44,14 +44,14 @@ function RadioWidget(props) {
         );
 
         return inline ? (
-          <div className={`form-check-inline ${disabledCls}`}>
+          <div key={i} className={`form-check-inline ${disabledCls}`}>
             {radio}
             <label className="form-check-label" htmlFor={i}>
               {option.label}
             </label>
           </div>
         ) : (
-          <div className={`form-check ${disabledCls}`}>
+          <div key={i} className={`form-check ${disabledCls}`}>
             {radio}
             <label className="form-check-label" htmlFor={i}>
               {option.label}

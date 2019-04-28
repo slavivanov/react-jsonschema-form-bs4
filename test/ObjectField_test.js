@@ -427,7 +427,7 @@ describe("ObjectField", () => {
           property1: "test",
         },
       });
-      const labels = node.querySelectorAll("label.control-label");
+      const labels = node.querySelectorAll("label");
       expect(labels[0].textContent).eql("CustomName Key");
       expect(labels[1].textContent).eql("CustomName");
     });
