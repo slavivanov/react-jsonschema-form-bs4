@@ -43,14 +43,22 @@ function DefaultArrayItem(props) {
     paddingRight: 6,
     fontWeight: "bold",
   };
+  const RemoveButton = props.RemoveButtonTemplate || IconButton;
+  const MoveDownButtonTemplate = props.MoveDownButtonTemplate || IconButton;
+  const MoveUpButtonTemplate = props.MoveUpButtonTemplate || IconButton;
+
+  const classNames =
+    (props && props.uiSchema && props.uiSchema && props.uiSchema.classNames) ||
+    "";
+  const columns = "col"; // props.hasToolbar ? "col-9" : "col-12";
   return (
-    <div key={props.index} className={"row " + props.className}>
-      <div className={props.hasToolbar ? "col-9" : "col-12"}>
-        {props.children}
-      </div>
+    <div
+      key={props.index}
+      className={"row " + props.className + " " + classNames}>
+      <div className={columns}>{props.children}</div>
 
       {props.hasToolbar && (
-        <div className="col-3 array-item-toolbox">
+        <div className="array-item-toolbox">
           <div
             className="btn-group"
             style={{
@@ -58,24 +66,24 @@ function DefaultArrayItem(props) {
               justifyContent: "space-around",
             }}>
             {(props.hasMoveUp || props.hasMoveDown) && (
-              <IconButton
+              <MoveUpButtonTemplate
                 type="outline-dark"
-                icon="arrow-up"
+                icon={props.icon || "arrow-up"}
                 className="array-item-move-up"
                 tabIndex="-1"
-                style={btnStyle}
+                style={props.style || btnStyle}
                 disabled={props.disabled || props.readonly || !props.hasMoveUp}
                 onClick={props.onReorderClick(props.index, props.index - 1)}
               />
             )}
 
             {(props.hasMoveUp || props.hasMoveDown) && (
-              <IconButton
+              <MoveDownButtonTemplate
                 type="outline-dark"
-                icon="arrow-down"
+                icon={props.icon || "arrow-down"}
                 className="array-item-move-down"
                 tabIndex="-1"
-                style={btnStyle}
+                style={props.style || btnStyle}
                 disabled={
                   props.disabled || props.readonly || !props.hasMoveDown
                 }
@@ -84,14 +92,16 @@ function DefaultArrayItem(props) {
             )}
 
             {props.hasRemove && (
-              <IconButton
+              <RemoveButton
                 type="danger"
-                icon="times"
+                type={props.type || "danger"}
+                icon={props.icson || "times"}
                 className="array-item-remove"
                 tabIndex="-1"
-                style={btnStyle}
+                style={props.style || btnStyle}
                 disabled={props.disabled || props.readonly}
                 onClick={props.onDropIndexClick(props.index)}
+                uiSchema={props.uiSchema}
               />
             )}
           </div>
@@ -102,6 +112,10 @@ function DefaultArrayItem(props) {
 }
 
 function DefaultFixedArrayFieldTemplate(props) {
+  const { AddButtonTemplate } = props;
+  // Check if a custom render function was passed in
+  const AddButtonComponent = AddButtonTemplate || AddButton;
+
   return (
     <fieldset className={props.className} id={props.idSchema.$id}>
       <ArrayFieldTitle
@@ -127,10 +141,11 @@ function DefaultFixedArrayFieldTemplate(props) {
       </div>
 
       {props.canAdd && (
-        <AddButton
-          className="array-item-add"
+        <AddButtonComponent
+          className={props.className + " array-item-add"}
           onClick={props.onAddClick}
           disabled={props.disabled || props.readonly}
+          uiSchema={props.uiSchema}
         />
       )}
     </fieldset>
@@ -138,6 +153,14 @@ function DefaultFixedArrayFieldTemplate(props) {
 }
 
 function DefaultNormalArrayFieldTemplate(props) {
+  const {
+    AddButtonTemplate,
+    RemoveButtonTemplate,
+    MoveUpButtonTemplate,
+    MoveDownButtonTemplate,
+  } = props;
+  // Check if a custom render function was passed in
+  const AddButtonComponent = AddButtonTemplate || AddButton;
   return (
     <fieldset className={props.className} id={props.idSchema.$id}>
       <ArrayFieldTitle
@@ -162,14 +185,23 @@ function DefaultNormalArrayFieldTemplate(props) {
       <div
         className="array-item-list"
         key={`array-item-list-${props.idSchema.$id}`}>
-        {props.items && props.items.map(p => DefaultArrayItem(p))}
+        {props.items &&
+          props.items.map(p => {
+            p.RemoveButtonTemplate = RemoveButtonTemplate;
+            p.MoveDownButtonTemplate = MoveDownButtonTemplate;
+            p.MoveUpButtonTemplate = MoveUpButtonTemplate;
+            p.uiSchema = props && props.uiSchema;
+
+            return DefaultArrayItem(p);
+          })}
       </div>
 
       {props.canAdd && (
-        <AddButton
-          className="array-item-add"
+        <AddButtonComponent
+          className={props.className + " array-item-add"}
           onClick={props.onAddClick}
           disabled={props.disabled || props.readonly}
+          uiSchema={props.uiSchema}
         />
       )}
     </fieldset>
@@ -205,8 +237,8 @@ class ArrayField extends Component {
   canAddItem(formItems) {
     const { schema, uiSchema } = this.props;
     let { addable } = getUiOptions(uiSchema);
-    if (addable !== false) {
-      // if ui:options.addable was not explicitly set to false, we can add
+    if (addable === true) {
+      // if ui:options.addable was explicitly set to true, we can add
       // another item if we have not exceeded maxItems yet
       if (schema.maxItems !== undefined) {
         addable = formItems.length < schema.maxItems;
@@ -364,7 +396,16 @@ class ArrayField extends Component {
       rawErrors,
     } = this.props;
     const title = schema.title === undefined ? name : schema.title;
-    const { ArrayFieldTemplate, definitions, fields, formContext } = registry;
+    const {
+      ArrayFieldTemplate,
+      definitions,
+      fields,
+      formContext,
+      AddButtonTemplate,
+      RemoveButtonTemplate,
+      MoveUpButtonTemplate,
+      MoveDownButtonTemplate,
+    } = registry;
     const { TitleField, DescriptionField } = fields;
     const itemsSchema = retrieveSchema(schema.items, definitions);
     const arrayProps = {
@@ -408,6 +449,10 @@ class ArrayField extends Component {
       formContext,
       formData,
       rawErrors,
+      AddButtonTemplate,
+      RemoveButtonTemplate,
+      MoveUpButtonTemplate,
+      MoveDownButtonTemplate,
     };
 
     // Check if a custom render function was passed in
@@ -516,7 +561,16 @@ class ArrayField extends Component {
     } = this.props;
     const title = schema.title || name;
     let items = this.props.formData;
-    const { ArrayFieldTemplate, definitions, fields, formContext } = registry;
+    const {
+      ArrayFieldTemplate,
+      definitions,
+      fields,
+      formContext,
+      AddButtonTemplate,
+      RemoveButtonTemplate,
+      MoveUpButtonTemplate,
+      MoveDownButtonTemplate,
+    } = registry;
     const { TitleField } = fields;
     const itemSchemas = schema.items.map((item, index) =>
       retrieveSchema(item, definitions, formData[index])
@@ -582,6 +636,10 @@ class ArrayField extends Component {
       TitleField,
       formContext,
       rawErrors,
+      AddButtonTemplate,
+      RemoveButtonTemplate,
+      MoveUpButtonTemplate,
+      MoveDownButtonTemplate,
     };
 
     // Check if a custom template template was passed in
@@ -615,8 +673,8 @@ class ArrayField extends Component {
       fields: { SchemaField },
     } = registry;
     const { orderable, removable } = {
-      orderable: true,
-      removable: true,
+      orderable: false,
+      removable: false,
       ...uiSchema["ui:options"],
     };
     const has = {
