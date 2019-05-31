@@ -10,7 +10,7 @@
         "curly": [2],
         "linebreak-style": [2, "unix"],
         "semi": [2, "always"],
-        "comma-dangle": [0],
+        "comma-dangle": [2, "always-multiline"],
         "no-unused-vars": [2, {
           "vars": "all",
           "args": "none",

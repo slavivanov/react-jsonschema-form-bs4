@@ -27,6 +27,9 @@ function DefaultObjectFieldTemplate(props) {
     }
     return true;
   };
+  const { AddButtonTemplate } = props;
+  // Check if a custom render function was passed in
+  const AddButtonComponent = AddButtonTemplate || AddButton;
 
   const { TitleField, DescriptionField } = props;
   return (
@@ -48,10 +51,11 @@ function DefaultObjectFieldTemplate(props) {
       )}
       {props.properties.map(prop => prop.content)}
       {canExpand() && (
-        <AddButton
-          className="object-property-expand"
-          onClick={props.onAddClick(props.schema)}
+        <AddButtonComponent
+          className={props.className + " object-property-expand"}
+          onClick={props.onAddClick(props.schema, props.uiSchema)}
           disabled={props.disabled || props.readonly}
+          uiSchema={props.uiSchema}
         />
       )}
     </fieldset>
@@ -150,7 +154,7 @@ class ObjectField extends Component {
   getDefaultValue(type) {
     switch (type) {
       case "string":
-        return "New Value";
+        return "";
       case "array":
         return [];
       case "boolean":
@@ -163,15 +167,17 @@ class ObjectField extends Component {
         return {};
       default:
         // We don't have a datatype for some reason (perhaps additionalProperties was true)
-        return "New Value";
+        return "";
     }
   }
 
-  handleAddClick = schema => () => {
+  handleAddClick = (schema, uiSchema) => () => {
     const type = schema.additionalProperties.type;
     const newFormData = { ...this.props.formData };
+    const keyName = uiSchema.additionalPropertiesKeyName || "Key";
+
     newFormData[
-      this.getAvailableKey("newKey", newFormData)
+      this.getAvailableKey(keyName, newFormData)
     ] = this.getDefaultValue(type);
     this.props.onChange(newFormData);
   };
@@ -191,6 +197,11 @@ class ObjectField extends Component {
       onFocus,
       registry = getDefaultRegistry(),
     } = this.props;
+    const {
+      AddButtonTemplate,
+      // MoveUpButtonTemplate,
+      // MoveDownButtonTemplate,
+    } = registry;
     const { definitions, fields, formContext } = registry;
     const { SchemaField, TitleField, DescriptionField } = fields;
     const schema = retrieveSchema(this.props.schema, definitions, formData);
@@ -265,6 +276,7 @@ class ObjectField extends Component {
       schema,
       formData,
       formContext,
+      AddButtonTemplate,
     };
     return <Template {...templateProps} onAddClick={this.handleAddClick} />;
   }

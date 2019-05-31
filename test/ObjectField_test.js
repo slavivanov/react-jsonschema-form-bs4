@@ -649,7 +649,7 @@ describe("ObjectField", () => {
 
       Simulate.click(node.querySelector(".object-property-expand button"));
 
-      expect(comp.state.formData.newKey).eql("New Value");
+      expect(comp.state.formData.newKey).eql("");
     });
 
     it("should add a new property with suffix when clicking the expand button and 'newKey' already exists", () => {
@@ -660,7 +660,7 @@ describe("ObjectField", () => {
 
       Simulate.click(node.querySelector(".object-property-expand button"));
 
-      expect(comp.state.formData["newKey-1"]).eql("New Value");
+      expect(comp.state.formData["newKey-1"]).eql("");
     });
 
     it("should not provide an expand button if length equals maxProperties", () => {

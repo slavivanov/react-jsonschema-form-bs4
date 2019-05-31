@@ -171,7 +171,7 @@ DefaultTemplate.defaultProps = {
   displayLabel: true,
 };
 
-function WrapIfAdditional(props) {
+export function WrapIfAdditional(props) {
   const {
     id,
     classNames,
@@ -182,6 +182,9 @@ function WrapIfAdditional(props) {
     readonly,
     required,
     schema,
+    displayLabel,
+    RemoveButtonTemplate,
+    uiSchema,
   } = props;
   const keyLabel = `${label} Key`; // i18n ?
   const additional = schema.hasOwnProperty(ADDITIONAL_PROPERTY_FLAG);
@@ -190,12 +193,16 @@ function WrapIfAdditional(props) {
     return <div className={classNames}>{props.children}</div>;
   }
 
+  const RemoveButton = RemoveButtonTemplate || IconButton;
+
   return (
     <div className={classNames}>
       <div className="row">
-        <div className="col-xs-5 form-additional">
+        <div className="col form-additional">
           <div className="form-group">
-            <Label label={keyLabel} required={required} id={`${id}-key`} />
+            {displayLabel && (
+              <Label label={keyLabel} required={required} id={`${id}-key`} />
+            )}
             <LabelInput
               label={label}
               required={required}
@@ -204,11 +211,9 @@ function WrapIfAdditional(props) {
             />
           </div>
         </div>
-        <div className="form-additional form-group col-xs-5">
-          {props.children}
-        </div>
+        <div className="form-additional form-group col">{props.children}</div>
         <div className="col-xs-2">
-          <IconButton
+          <RemoveButton
             type="danger"
             icon="remove"
             className="array-item-remove btn-block"
@@ -216,6 +221,7 @@ function WrapIfAdditional(props) {
             style={{ border: "0" }}
             disabled={disabled || readonly}
             onClick={onDropPropertyClick(label)}
+            uiSchema={uiSchema}
           />
         </div>
       </div>
@@ -240,6 +246,7 @@ function SchemaFieldRender(props) {
     fields,
     formContext,
     FieldTemplate = DefaultTemplate,
+    RemoveButtonTemplate,
   } = registry;
   let idSchema = props.idSchema;
   const schema = retrieveSchema(props.schema, definitions, formData);
@@ -339,6 +346,7 @@ function SchemaFieldRender(props) {
     fields,
     schema,
     uiSchema,
+    RemoveButtonTemplate,
   };
 
   const _AnyOfField = registry.fields.AnyOfField;
