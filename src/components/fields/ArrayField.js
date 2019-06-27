@@ -579,10 +579,17 @@ class ArrayField extends Component {
       ? retrieveSchema(schema.additionalItems, definitions, formData)
       : null;
 
-    if (!items || items.length < itemSchemas.length) {
+    // Use Object.values(items).length instead of items.length
+    // to not account for empty slots,
+    // which I believe was the original intention here
+    const itemsLength = Object.values(items).length;
+    if (!items || itemsLength < itemSchemas.length) {
       // to make sure at least all fixed items are generated
       items = items || [];
-      items = items.concat(new Array(itemSchemas.length - items.length));
+      items = items.concat(
+        // spread to fill with undefined
+        [...new Array(itemSchemas.length - itemsLength)]
+      );
     }
 
     // These are the props passed into the render function
