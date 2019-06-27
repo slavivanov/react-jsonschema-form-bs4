@@ -98,7 +98,13 @@ export function getWidget(schema, widget, registeredWidgets = {}) {
     return Widget.MergedWidget;
   }
 
-  if (typeof widget === "function") {
+  if (
+    typeof widget === "function" ||
+    // TODO Slav - Hack added to make this work after mobx 6 started wrapping
+    // injected components. Remove once we have migrated away from @inject
+    // wrapped components.
+    typeof widget === "object"
+  ) {
     return mergeOptions(widget);
   }
 
