@@ -19,12 +19,14 @@ import {
   getDefaultRegistry,
 } from "../../utils";
 
-function ArrayFieldTitle({ TitleField, idSchema, title, required }) {
+function ArrayFieldTitle({ TitleField, idSchema, title, required, uiSchema }) {
   if (!title) {
     return null;
   }
   const id = `${idSchema.$id}__title`;
-  return <TitleField id={id} title={title} required={required} />;
+  return (
+    <TitleField id={id} title={title} required={required} uiSchema={uiSchema} />
+  );
 }
 
 function ArrayFieldDescription({ DescriptionField, idSchema, description }) {
@@ -124,6 +126,7 @@ function DefaultFixedArrayFieldTemplate(props) {
         idSchema={props.idSchema}
         title={props.uiSchema["ui:title"] || props.title}
         required={props.required}
+        uiSchema={props.uiSchema}
       />
 
       {(props.uiSchema["ui:description"] || props.schema.description) && (
@@ -169,6 +172,7 @@ function DefaultNormalArrayFieldTemplate(props) {
         idSchema={props.idSchema}
         title={props.uiSchema["ui:title"] || props.title}
         required={props.required}
+        uiSchema={props.uiSchema}
       />
 
       {(props.uiSchema["ui:description"] || props.schema.description) && (

@@ -39,6 +39,7 @@ function DefaultObjectFieldTemplate(props) {
           id={`${props.idSchema.$id}__title`}
           title={props.title || props.uiSchema["ui:title"]}
           required={props.required}
+          uiSchema={props.uiSchema}
           formContext={props.formContext}
         />
       )}
