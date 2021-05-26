@@ -605,9 +605,15 @@ class ArrayField extends Component {
       formData,
       items: items.map((item, index) => {
         const additional = index >= itemSchemas.length;
-        const itemSchema = additional
-          ? retrieveSchema(schema.additionalItems, definitions, item)
-          : itemSchemas[index];
+        // SLAV - check for additional items schema here, to prevent crashes
+        // when schema is missing for extra items in array
+        const itemSchema =
+          additional && schema.additionalItems
+            ? retrieveSchema(schema.additionalItems, definitions, item)
+            : itemSchemas[index];
+        if (!itemSchema) {
+          return null;
+        }
         const itemIdPrefix = idSchema.$id + "_" + index;
         const itemIdSchema = toIdSchema(
           itemSchema,
